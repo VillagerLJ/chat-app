@@ -7,7 +7,7 @@
     "test": "jest",
     "dev": "webpack-dev-server",
     "build": "webpack --config webpack.config.js",
-    "server": "node server.js"
+    "server": "node server"
   },
   "author": "villagerLJ",
   "license": "MIT",
