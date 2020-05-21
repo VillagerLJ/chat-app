@@ -1,8 +1,12 @@
 import {
-	SEND_MESSAGE,
-	UPDATE_MESSAGE,
+	BROADCAST_MESSAGE,
+	UPDATE_BROADCAST_MESSAGE,
+	MESSAGE_ROOM,
+	UPDATE_ROOM_MESSAGE,
 	MESSAGE_SELF,
 	UPDATE_SELF_MESSAGE,
+	JOIN_ROOM,
+	UPDATE_ROOM,
 } from '../../../actions';
 
 const initialState = {
@@ -11,12 +15,15 @@ const initialState = {
 
 export default function chatReducer(state = initialState, action) {
     switch(action.type) {
-		case SEND_MESSAGE:
-			return state;
+		case BROADCAST_MESSAGE:
+		case MESSAGE_ROOM:
 		case MESSAGE_SELF:
+		case JOIN_ROOM:
 			return state;
-		case UPDATE_MESSAGE:
-		case UPDATE_SELF_MESSAGE: {
+		case UPDATE_BROADCAST_MESSAGE:
+		case UPDATE_ROOM_MESSAGE:
+		case UPDATE_SELF_MESSAGE:
+		case UPDATE_ROOM: {
 			const { message } = action;
 
 			return {

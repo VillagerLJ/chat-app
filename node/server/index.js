@@ -12,6 +12,6 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 //Setting up a socket with the namespace "connection" for new sockets
-io.on("connection", chat);
+io.on("connection", (socket) => chat(socket, io));
 
 server.listen(port, () => console.log(`Listening on port ${port}`));

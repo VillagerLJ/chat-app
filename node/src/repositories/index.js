@@ -4,7 +4,8 @@ import thunkMiddleware from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { socket } from '../config';
 
-const events = ['UPDATE_MESSAGE', 'UPDATE_SELF_MESSAGE']
+// events for registering
+const events = ['UPDATE_BROADCAST_MESSAGE', 'UPDATE_ROOM_MESSAGE', 'UPDATE_SELF_MESSAGE', 'UPDATE_ROOM']
 
 function createSocketIoMiddleware(socket, criteria = [],
 	{ execute = defaultExecute } = {}) {
@@ -48,7 +49,9 @@ function createSocketIoMiddleware(socket, criteria = [],
 function defaultExecute(action, emit, next, dispatch) {
 	console.log(action);
 	const { type } = action;
-	emit(type, action);
+	if (type) {
+		emit(type, action);
+	}
     next(action);
 }
 
