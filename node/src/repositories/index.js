@@ -1,11 +1,11 @@
 import { createStore, applyMiddleware } from 'redux';
-import chatReducer from './redux/reducer'
+import reducer from './redux/reducer'
 import thunkMiddleware from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { socket } from '../config';
+import { socket } from '../socket';
 
 // events for registering
-const events = ['UPDATE_BROADCAST_MESSAGE', 'UPDATE_ROOM_MESSAGE', 'UPDATE_SELF_MESSAGE', 'UPDATE_ROOM']
+const events = ['UPDATE_BROADCAST_MESSAGE', 'UPDATE_ROOM_MESSAGE', 'UPDATE_SELF_MESSAGE', 'UPDATE_ROOM'];
 
 function createSocketIoMiddleware(socket, criteria = [],
 	{ execute = defaultExecute } = {}) {
@@ -18,7 +18,7 @@ function createSocketIoMiddleware(socket, criteria = [],
 			return dispatch;
 		}));
 		return (next) => (action) => {
-			if (evaluate(action, criteria)) {
+			if (evaluate(action, criteria) && socket.connected) {
 				return execute(action, emitBound, next, dispatch);
 			}
 			return next(action);
@@ -49,7 +49,7 @@ function createSocketIoMiddleware(socket, criteria = [],
 function defaultExecute(action, emit, next, dispatch) {
 	console.log(action);
 	const { type } = action;
-	if (type) {
+	if (type && socket.connected) {
 		emit(type, action);
 	}
     next(action);
@@ -60,7 +60,7 @@ const socketIoMiddleware = createSocketIoMiddleware(socket, "");
 const middlewares = [thunkMiddleware, socketIoMiddleware];
 
 const store = createStore(
-	chatReducer,
+	reducer,
 	composeWithDevTools(applyMiddleware(...middlewares))
 );
 

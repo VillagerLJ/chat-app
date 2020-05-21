@@ -2,6 +2,8 @@ import React, { useState, useEffect, } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
+	startConnect,
+	closeConnect,
 	broadcastMessageAction,
 	messageRoomAction,
 	messageSelfAction,
@@ -11,6 +13,8 @@ import {
 
 const propTypes = {
 	messages: PropTypes.array,
+	startConnect: PropTypes.func.isRequired,
+	closeConnect: PropTypes.func.isRequired,
 	broadcastMessageAction: PropTypes.func.isRequired,
 	messageRoomAction: PropTypes.func.isRequired,
 	messageSelfAction: PropTypes.func.isRequired,
@@ -19,6 +23,8 @@ const propTypes = {
 
 function Chat({
 	messages,
+	startConnect,
+	closeConnect,
 	broadcastMessageAction,
 	messageRoomAction,
 	messageSelfAction,
@@ -31,6 +37,16 @@ function Chat({
 		setRoom('room1');
 		joinRoom('room1');
 	}, []);
+
+	const _handleConnect = (e) => {
+		e.preventDefault();
+		startConnect();
+	}
+
+	const _handleDisconnect = (e) => {
+		e.preventDefault();
+		closeConnect();
+	}
 
 	const _handleChangeRoom = (e) => {
 		const value = e.target.value;
@@ -56,6 +72,8 @@ function Chat({
 	return (
 		<>
 			<div>
+				<button onClick={_handleConnect}>Connect</button>
+				<button onClick={_handleDisconnect}>Disconnect</button>
 				<select value={room} onChange={_handleChangeRoom}>
 					<option value={"room1"}>room1</option>
 					<option value={"room2"}>room2</option>
@@ -78,12 +96,14 @@ Chat.propTypes = propTypes;
 
 function mapStateToProps(state) {
 	return {
-		messages: state.messages,
+		messages: state.chatReducer.messages,
 	};
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
+		startConnect: () => dispatch(startConnect()),
+		closeConnect: () => dispatch(closeConnect()),
 		broadcastMessageAction: (msg) => dispatch(broadcastMessageAction(msg)),
 		messageRoomAction: (msg) => dispatch(messageRoomAction(msg)),
 		messageSelfAction: (msg) => dispatch(messageSelfAction(msg)),

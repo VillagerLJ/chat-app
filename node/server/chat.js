@@ -10,6 +10,16 @@ function broadcast(ws, message, userId) {
 	ws.broadcast.emit('UPDATE_BROADCAST_MESSAGE', { message, userId });
 }
 
+function whichRoom(ws) {
+	return Object.keys(ws.rooms).find(room => {
+		return room !== ws.id
+	});
+}
+
+function leftRoomMessage(ws, room, userId) {
+	ws.to(room).emit('UPDATE_ROOM', `${userId} has left ${room}`);
+}
+
 function chat(ws, io) {
 	const userId = v4();
 
@@ -20,11 +30,10 @@ function chat(ws, io) {
 
 	ws.on('JOIN_ROOM', async (action) => {
 		console.log(action);
-		const inRoom = Object.keys(ws.rooms).find(room => {
-			return room !== ws.id
-		})
+		const inRoom = whichRoom(ws);
 		if (inRoom) {
 			await ws.leave(inRoom);
+			await leftRoomMessage(ws, inRoom, userId);
 		}
 
 		const { room } = action;
@@ -45,9 +54,7 @@ function chat(ws, io) {
 	ws.on('MESSAGE_ROOM', (action) => {
 		console.log(action, ws.rooms);
 		const { message: msg } = action;
-		const inRoom = Object.keys(ws.rooms).find(room => {
-			return room !== ws.id
-		})
+		const inRoom = whichRoom(ws);
 		const message = `> ${inRoom}/${userId}: ${camelize(typeof msg === "string" ? msg : "")}`;
 		console.log('message:', message);
 		ws.to(inRoom).emit('UPDATE_ROOM', { message, userId });
@@ -62,7 +69,8 @@ function chat(ws, io) {
 	});
 
     //A special namespace "disconnect" for when a client disconnects
-    ws.on("disconnect", () => {
+    ws.on("disconnect", (reason) => {
+		console.log(`${userId}: ${reason}`);
 		// Unregister user conection
 		users.delete(userId);
 		broadcast(ws, `> User with the id ${userId} is disconnected`, userId);
