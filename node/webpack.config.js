@@ -1,16 +1,19 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'main.js'
   },
-	devtool: 'source-map',
+  devtool: 'source-map',
+  resolve: {
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
+  },
   module: {
 		rules: [
 			{
-				test: /\.(js|jsx)$/,
+				test: /\.(ts|tsx|js|jsx)$/,
 				use: 'babel-loader',
 				exclude: /(node_modules|bower_components)/,
       },
