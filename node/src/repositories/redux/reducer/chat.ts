@@ -7,13 +7,18 @@ import {
 	UPDATE_SELF_MESSAGE,
 	JOIN_ROOM,
 	UPDATE_ROOM,
+	Action,
 } from '../../../actions';
+
+export type ChatState = {
+	readonly messages: Array<string|undefined>,
+}
 
 const initialState = {
 	messages: [],
 }
 
-export default function chatReducer(state = initialState, action) {
+export default function chatReducer(state: ChatState = initialState, action: Action): ChatState {
     switch(action.type) {
 		case BROADCAST_MESSAGE:
 		case MESSAGE_ROOM:

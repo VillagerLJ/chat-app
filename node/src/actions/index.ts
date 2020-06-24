@@ -1,4 +1,6 @@
 import { socket, } from '../socket';
+import { Dispatch } from 'redux';
+import { RootState } from '../repositories/redux/reducer';
 
 export const CONNECT = 'CONNECT';
 export const DISCONNECT = 'DISCONNECT';
@@ -11,13 +13,23 @@ export const UPDATE_SELF_MESSAGE = 'UPDATE_SELF_MESSAGE';
 export const JOIN_ROOM = 'JOIN_ROOM';
 export const UPDATE_ROOM = 'UPDATE_ROOM';
 
-export function connectAction() {
+type Message = string;
+type Room = string;
+export type Action = {
+    type: string,
+    message?: Message,
+    room?: Room,
+};
+type GetState = () => RootState;
+type ConnectFunction = (dispatch: Dispatch, getState: GetState) => void;
+
+export function connectAction(): Action {
     return {
         type: CONNECT,
     };
 }
 
-export function startConnect() {
+export function startConnect(): ConnectFunction {
     return (dispatch, getState) => {
         const { connectionReducer: { connection } } = getState();
 
@@ -28,73 +40,73 @@ export function startConnect() {
     };
 }
 
-export function disconnectAction() {
+export function disconnectAction(): Action {
     return {
         type: DISCONNECT,
     };
 }
 
-export function closeConnect() {
-    return (dispatch, getState) => {
+export function closeConnect(): ConnectFunction {
+    return (dispatch: Dispatch, getState): void => {
         const { connectionReducer: { connection } } = getState();
 
         if (connection) {
-            dispatch(disconnectAction);
+            dispatch(disconnectAction());
             socket.close();
         }
     }
 }
 
-export function broadcastMessageAction(message) {
+export function broadcastMessageAction(message: Message): Action {
     return {
         type: BROADCAST_MESSAGE,
         message,
     };
 }
 
-export function updateBroadcastMessageAction(message) {
+export function updateBroadcastMessageAction(message: Message): Action {
     return {
         type: UPDATE_BROADCAST_MESSAGE,
         message,
     };
 }
 
-export function messageRoomAction(message) {
+export function messageRoomAction(message: Message): Action {
     return {
         type: MESSAGE_ROOM,
         message,
     };
 }
 
-export function updateRoomMessageAction(message) {
+export function updateRoomMessageAction(message: Message): Action {
     return {
         type: UPDATE_ROOM_MESSAGE,
         message,
     };
 }
 
-export function messageSelfAction(message) {
+export function messageSelfAction(message: Message): Action {
     return {
         type: MESSAGE_SELF,
         message,
     };
 }
 
-export function updateSelfMessageAction(message) {
+export function updateSelfMessageAction(message: Message): Action {
     return {
         type: UPDATE_SELF_MESSAGE,
         message,
     };
 }
 
-export function joinRoom(room) {
+export function joinRoom(room: Room): Action {
     return {
         type: JOIN_ROOM,
         room,
     };
 }
 
-export function updateRoom(message) {
+export function updateRoom(message: Message): Action {
     return {
         type: UPDATE_ROOM,
         message,

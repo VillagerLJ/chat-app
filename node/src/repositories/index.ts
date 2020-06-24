@@ -1,23 +1,26 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, Dispatch, AnyAction, Middleware } from 'redux';
 import reducer from './redux/reducer'
 import thunkMiddleware from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { socket } from '../socket';
 
+type AnyFunction = (...args: unknown[]) => unknown;
+type Option = string | AnyFunction | Array<string>;
+
 // events for registering
 const events = ['UPDATE_BROADCAST_MESSAGE', 'UPDATE_ROOM_MESSAGE', 'UPDATE_SELF_MESSAGE', 'UPDATE_ROOM'];
 
-function createSocketIoMiddleware(socket, criteria = [],
-	{ execute = defaultExecute } = {}) {
+function createSocketIoMiddleware(socket: SocketIOClient.Socket, criteria: Option = [],
+	{ execute = defaultExecute } = {}): Middleware {
 	const emitBound = socket.emit.bind(socket);
 
 	return ({ dispatch, getState }) => {
 		// Wire socket.io to dispatch actions sent by the server.
-		events.forEach(event => socket.on(event, (data) => {
+		events.forEach(event => socket.on(event, (data: Record<string, unknown>) => {
 			dispatch({ ...data, type: event });
 			return dispatch;
 		}));
-		return (next) => (action) => {
+		return (next: Dispatch) => (action: AnyAction) => {
 			if (evaluate(action, criteria) && socket.connected) {
 				return execute(action, emitBound, next, dispatch);
 			}
@@ -25,7 +28,7 @@ function createSocketIoMiddleware(socket, criteria = [],
 		};
 	};
 
-	function evaluate(action, option) {
+	function evaluate(action: AnyAction , option: Option): boolean {
 		if (!action || !action.type) {
 			return false;
 		}
@@ -34,7 +37,7 @@ function createSocketIoMiddleware(socket, criteria = [],
 		let matched = false;
 		if (typeof option === 'function') {
 			// Test function
-			matched = option(type, action);
+			matched = option(type, action) ? true : false;
 		} else if (typeof option === 'string') {
 			// String prefix
 			matched = type.indexOf(option) === 0;
@@ -46,7 +49,7 @@ function createSocketIoMiddleware(socket, criteria = [],
 	}
 }
 
-function defaultExecute(action, emit, next, dispatch) {
+function defaultExecute(action: AnyAction, emit: (event: string, ...args: unknown[]) => SocketIOClient.Socket, next: Dispatch, dispatch: Dispatch) {
 	console.log(action);
 	const { type } = action;
 	if (type && socket.connected) {

@@ -1,6 +1,5 @@
-import React, { useState, useEffect, } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { useState, useEffect, ReactElement, } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
 	startConnect,
 	closeConnect,
@@ -10,63 +9,54 @@ import {
 	updateBroadcastMessageAction,
 	joinRoom
 } from './actions';
+import { RootState } from './repositories/redux/reducer';
+import { ChatState } from './repositories/redux/reducer/chat';
 
-const propTypes = {
-	messages: PropTypes.array,
-	startConnect: PropTypes.func.isRequired,
-	closeConnect: PropTypes.func.isRequired,
-	broadcastMessageAction: PropTypes.func.isRequired,
-	messageRoomAction: PropTypes.func.isRequired,
-	messageSelfAction: PropTypes.func.isRequired,
-	joinRoom: PropTypes.func.isRequired,
-};
-
-function Chat({
-	messages,
-	startConnect,
-	closeConnect,
-	broadcastMessageAction,
-	messageRoomAction,
-	messageSelfAction,
-	joinRoom,
-}) {
+function Chat(): ReactElement {
 	const [room, setRoom] = useState('');
 	const [input, setInput] = useState('');
+	const chatReducer = useSelector<RootState, ChatState>(state => state.chatReducer);
+	const { messages } = chatReducer;
+	console.log(chatReducer, messages);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		setRoom('room1');
 		joinRoom('room1');
 	}, []);
 
-	const _handleConnect = (e) => {
+	const _handleConnect = (e: React.MouseEvent) => {
+		console.log('start');
 		e.preventDefault();
-		startConnect();
+		dispatch(startConnect());
 	}
 
-	const _handleDisconnect = (e) => {
+	const _handleDisconnect = (e: React.MouseEvent) => {
 		e.preventDefault();
-		closeConnect();
+		dispatch(closeConnect());
 	}
 
-	const _handleChangeRoom = (e) => {
-		const value = e.target.value;
-		setRoom(value);
-		joinRoom(value);
+	const _handleChangeRoom = (e: React.ChangeEvent) => {
+		const { value } = e.target as HTMLSelectElement;
+		if (value) {
+			setRoom(value);
+			joinRoom(value);
+		}
 	}
 
-	const _handleBroadcastMessage = e => {
+	const _handleBroadcastMessage = (e: React.MouseEvent) => {
 		e.preventDefault();
-		broadcastMessageAction(input);
+		dispatch(broadcastMessageAction(input));
 	}
 
-	const _handleSendMessage = e => {
+	const _handleSendMessage = (e: React.MouseEvent) => {
 		e.preventDefault();
-		messageRoomAction(input);
+		dispatch(messageRoomAction(input));
 	}
 
-	const _handleMessageSelf = e => {
+	const _handleMessageSelf = (e: React.MouseEvent) => {
 		e.preventDefault();
-		messageSelfAction(input);
+		dispatch(messageSelfAction(input));
 	}
 
 	return (
@@ -92,24 +82,4 @@ function Chat({
 	);
 }
 
-Chat.propTypes = propTypes;
-
-function mapStateToProps(state) {
-	return {
-		messages: state.chatReducer.messages,
-	};
-}
-
-function mapDispatchToProps(dispatch) {
-	return {
-		startConnect: () => dispatch(startConnect()),
-		closeConnect: () => dispatch(closeConnect()),
-		broadcastMessageAction: (msg) => dispatch(broadcastMessageAction(msg)),
-		messageRoomAction: (msg) => dispatch(messageRoomAction(msg)),
-		messageSelfAction: (msg) => dispatch(messageSelfAction(msg)),
-		updateBroadcastMessageAction: () => dispatch(updateBroadcastMessageAction()),
-		joinRoom: (room) => dispatch(joinRoom(room)),
-	};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Chat);
+export default Chat;
