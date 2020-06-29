@@ -1,7 +1,7 @@
-const express = require("express");
-const http = require("http");
-const socketIo = require("socket.io");
-const { chat } = require("./chat");
+import express from 'express';
+import http from 'http';
+import socketIo from 'socket.io';
+import { chat } from './chat';
 
 //Port from environment variable or default - 4001
 const port = process.env.PORT || 4001;

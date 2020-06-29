@@ -1,26 +1,31 @@
-const { v4 } = require("uuid");
-const { camelize } = require("./camelize");
+import { v4 } from "uuid";
+import { camelize } from "./camelize";
+import { Socket } from 'socket.io';
+
+type Message = string;
+type Id = string;
+type Room = string;
 
 const users = new Map();
 
-function broadcast(ws, message, userId) {
+export function broadcast(ws: Socket, message: Message, userId: Id): void {
 	if (!message) return;
 
 	console.log('broadcast:', message);
 	ws.broadcast.emit('UPDATE_BROADCAST_MESSAGE', { message, userId });
 }
 
-function whichRoom(ws) {
+export function whichRoom(ws: Socket): Room {
 	return Object.keys(ws.rooms).find(room => {
 		return room !== ws.id
-	});
+	}) || 'Not in room';
 }
 
-function leftRoomMessage(ws, room, userId) {
+export function leftRoomMessage(ws: Socket, room: Room, userId: Id): void {
 	ws.to(room).emit('UPDATE_ROOM', `${userId} has left ${room}`);
 }
 
-function chat(ws, io) {
+export function chat(ws: Socket, io: SocketIO.Server): void {
 	const userId = v4();
 
 	// Register user connection
@@ -76,5 +81,3 @@ function chat(ws, io) {
 		broadcast(ws, `> User with the id ${userId} is disconnected`, userId);
 	});
 }
-
-module.exports.chat = chat;
