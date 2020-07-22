@@ -73,8 +73,8 @@ export function chat(ws: Socket, io: SocketIO.Server): void {
 		ws.emit('UPDATE_SELF_MESSAGE', { message });
 	});
 
-    //A special namespace "disconnect" for when a client disconnects
-    ws.on("disconnect", (reason) => {
+	//A special namespace "disconnect" for when a client disconnects
+	ws.on("disconnect", (reason) => {
 		console.log(`${userId}: ${reason}`);
 		// Unregister user conection
 		users.delete(userId);

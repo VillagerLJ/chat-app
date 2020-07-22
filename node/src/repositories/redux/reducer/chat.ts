@@ -11,7 +11,7 @@ import {
 } from '../../../actions';
 
 export type ChatState = {
-	readonly messages: Array<string|undefined>,
+	readonly messages: Array<string | undefined>,
 }
 
 const initialState = {
@@ -19,7 +19,7 @@ const initialState = {
 }
 
 export default function chatReducer(state: ChatState = initialState, action: Action): ChatState {
-    switch(action.type) {
+	switch (action.type) {
 		case BROADCAST_MESSAGE:
 		case MESSAGE_ROOM:
 		case MESSAGE_SELF:
@@ -33,10 +33,10 @@ export default function chatReducer(state: ChatState = initialState, action: Act
 
 			return {
 				...state,
-				messages: [ ...state.messages, message],
+				messages: [...state.messages, message],
 			};
 		}
 		default:
 			return state;
-    }
+	}
 }

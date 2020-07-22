@@ -13,12 +13,12 @@ const initialState = {
 }
 
 export default function connectionReducer(state: ConnectionState = initialState, action: Action): ConnectionState {
-    switch(action.type) {
+	switch (action.type) {
 		case CONNECT:
 			return { connection: true, };
 		case DISCONNECT:
 			return { connection: false, };
 		default:
 			return state;
-    }
+	}
 }

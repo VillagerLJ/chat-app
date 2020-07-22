@@ -28,7 +28,7 @@ function createSocketIoMiddleware(socket: SocketIOClient.Socket, criteria: Optio
 		};
 	};
 
-	function evaluate(action: AnyAction , option: Option): boolean {
+	function evaluate(action: AnyAction, option: Option): boolean {
 		if (!action || !action.type) {
 			return false;
 		}
@@ -55,7 +55,7 @@ function defaultExecute(action: AnyAction, emit: (event: string, ...args: unknow
 	if (type && socket.connected) {
 		emit(type, action);
 	}
-    next(action);
+	next(action);
 }
 
 const socketIoMiddleware = createSocketIoMiddleware(socket, "");

@@ -69,11 +69,11 @@ function Chat(): ReactElement {
 					<option value={"room2"}>room2</option>
 				</select>
 			</div>
-			{messages.map((message, index) => 
+			{messages.map((message, index) =>
 				<div key={index}>{message}</div>
 			)}
 			<div>
-				<input type="text" value={input} onChange={e => setInput(e.target.value)}/>
+				<input type="text" value={input} onChange={e => setInput(e.target.value)} />
 				<button onClick={_handleBroadcastMessage}>Broadcast</button>
 				<button onClick={_handleSendMessage}>Room</button>
 				<button onClick={_handleMessageSelf}>Self</button>
