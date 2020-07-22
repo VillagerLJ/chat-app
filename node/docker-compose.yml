@@ -1,0 +1,36 @@
+version: '3'
+services:
+    server:
+        build: ./
+        working_dir: /chat-app
+        volumes:
+            - ./:/chat-app
+        ports:
+            - 4001:4001
+        environment:
+            - PORT=4001
+        command: sh bin/startup.sh
+
+    nginx:
+        image: nginx
+        depends_on:
+            - server
+        working_dir: /chat-app
+        volumes:
+            - ./:/chat-app
+        ports:
+            - 8888:80
+        command: sh bin/startup.sh
+
+    # chat1:
+    #     build: ./
+    #     environment:
+    #         - PORT=8080
+    # chat2:
+    #     build: ./
+    #     environment:
+    #         - PORT=8081
+    # chat3:
+    #     build: ./
+    #     environment:
+    #         - PORT=8082

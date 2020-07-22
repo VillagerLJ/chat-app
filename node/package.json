@@ -6,6 +6,7 @@
 	"scripts": {
 		"test": "jest",
 		"dev": "webpack-dev-server",
+		"tsc": "tsc",
 		"build": "concurrently \"webpack --config webpack.config.js\" \"tsc\"",
 		"server": "node server/dist"
 	},
