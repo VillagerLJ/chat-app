@@ -13,7 +13,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-app.use(express.static(path.join(__dirname, '..', '..', 'dist')));
+app.use(express.static(path.join('public')));
 app.use(router);
 
 //Setting up a socket with the namespace "connection" for new sockets
