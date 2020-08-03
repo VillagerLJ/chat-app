@@ -7,12 +7,14 @@
 		"test": "jest",
 		"dev": "webpack-dev-server",
 		"tsc": "tsc",
-		"build": "concurrently \"webpack --config webpack.config.js\" \"tsc\"",
+		"build": "concurrently \"webpack --config webpack.client.js\" \"webpack --config webpack.server.js\"",
 		"server": "node server/dist"
 	},
 	"author": "villagerLJ",
 	"license": "MIT",
 	"dependencies": {
+		"@babel/plugin-transform-runtime": "^7.11.0",
+		"@babel/runtime": "^7.11.0",
 		"@types/express": "^4.17.6",
 		"@types/react": "^16.9.36",
 		"@types/react-dom": "^16.9.8",
@@ -49,6 +51,7 @@
 		"typescript": "^3.9.5",
 		"webpack": "^4.43.0",
 		"webpack-cli": "^3.3.11",
-		"webpack-dev-server": "^3.11.0"
+		"webpack-dev-server": "^3.11.0",
+		"webpack-node-externals": "^2.5.0"
 	}
 }
