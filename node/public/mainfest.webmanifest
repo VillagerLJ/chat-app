@@ -1,0 +1,25 @@
+{
+	"short_name": "Chat",
+	"name": "Vi Chat",
+	"icons": [
+	  {
+		"src": "./logo512.png",
+		"type": "image/png",
+		"sizes": "512x512"
+	  }
+	],
+	"start_url": "/?source=pwa",
+	"background_color": "#3367D6",
+	"display": "standalone",
+	"scope": "/",
+	"theme_color": "#3367D6",
+	"shortcuts": [
+		{
+		  "name": "How's weather today?",
+		  "short_name": "Today",
+		  "description": "View weather information for today",
+		  "url": "/today?source=pwa",
+		  "icons": [{ "src": "./logo192.png", "sizes": "192x192" }]
+		}
+	]
+}
