@@ -1,2 +1,2 @@
 npm run build
-npm run server
+node server/dist

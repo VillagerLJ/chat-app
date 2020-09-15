@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 const MODE = 'development';
 
 module.exports = {
@@ -35,6 +36,10 @@ module.exports = {
 			title: 'chat-app',
 			filename: '../index.html',
 			template: 'views/index.html',
+		}),
+		new WorkboxPlugin.GenerateSW({
+			clientsClaim: true,
+			skipWaiting: true,
 		}),
 	],
 	performance: {
